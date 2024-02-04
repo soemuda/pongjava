@@ -12,6 +12,7 @@ public class GamePanel extends JPanel implements  Runnable{
     static final int PADDLE_WIDTH = 25;
     static final int PADDLE_HEIGHT = 100;
     Thread gameThread;
+
     Image image;
     Graphics graphics;
     Random random;
@@ -37,8 +38,9 @@ public class GamePanel extends JPanel implements  Runnable{
 
     }
     public void newBall() {
-        //random = new Random();
-        ball = new Ball((GAME_WIDTH/2)-(BALL_DIAMETER/2),(GAME_HEIGHT/2)-(BALL_DIAMETER/2),BALL_DIAMETER,BALL_DIAMETER);
+        random = new Random();
+        ball = new Ball((GAME_WIDTH/2)-(BALL_DIAMETER/2),random.nextInt(GAME_HEIGHT-BALL_DIAMETER),BALL_DIAMETER,BALL_DIAMETER);
+
 
     }
 
@@ -53,6 +55,7 @@ public class GamePanel extends JPanel implements  Runnable{
         paddle1.draw(g);
         paddle2.draw(g);
         ball.draw(g);
+        score.draw(g);
     }
     public void move() {
         paddle1.move();
@@ -94,15 +97,33 @@ public class GamePanel extends JPanel implements  Runnable{
         //this stops paddles at window edges
         if(paddle1.y<=0)
             paddle1.y=0;
-        if(paddle1.y >= (GAME_HEIGHT-PADDLE_WIDTH))
+
+        // VElocity needs to go 0
+        if(paddle1.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
             paddle1.y = GAME_HEIGHT-PADDLE_HEIGHT;
+
+
         if(paddle2.y<=0)
             paddle2.y=0;
-        if(paddle2.y >= (GAME_HEIGHT-PADDLE_WIDTH))
+
+        if(paddle2.y >= (GAME_HEIGHT-PADDLE_HEIGHT))
             paddle2.y = GAME_HEIGHT-PADDLE_HEIGHT;
+
+
         //give a player 1 point, cretes new paddles and ball
 
-        if(ball.x <=0) {
+       if(ball.x <=0) {
+           score.player2++;
+           newPaddle();
+           newBall();
+           System.out.println("Player 2 Score: " + score.player2);
+       }
+        if(ball.x >= GAME_WIDTH-BALL_DIAMETER) {
+            score.player1++;
+            newPaddle();
+            newBall();
+            System.out.println("Player 1 Score: " + score.player1);
+        }
     }
 
     public void run() {
